@@ -17,12 +17,13 @@ import db.db_functions as dbf
 import db.user_details as ud
 import visualization.information as i
 import visualization.plot as p
+import os
 import pandas as pd
 import numpy as np
 import math
 
 # Connect to DB (Recommendation: Install SQLiteStudio)
-db_file = "D:\\Arxius\\3_Academic\\9_IMS_Lisboa\\Courses\\Seminar with Python\\Project\\db\\sqlite\\db\\pythonsqlite.db"
+db_file = os.path.join(os.path.dirname(__file__), 'db\\sqlite\\db\\pythonsqlite.db')
 c, conn = dbf.create_connection(db_file)
 
 # Drop tables in DB
@@ -33,7 +34,7 @@ c, conn = dbf.create_connection(db_file)
 #dbf.create_plane(c, conn)
 
 # Define blocking method (Options: "Next to occupied" and "Middle seat")
-blocking_method = "Middle seat"
+blocking_method = "Next to occupied"
 
 # Read number of columns, rows and position of corridor from DB
 columns = c.execute("""SELECT Number_Columns FROM Planes""").fetchone()[0] + 1

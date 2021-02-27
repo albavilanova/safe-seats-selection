@@ -63,7 +63,7 @@ def make_plot(seats_map, seats_map_1C):
     elif col_corridor_1C == 2:
 
         x_labels_1C = ["A", "B", "", "C", "D"]
-        gs = gridspec.GridSpec(2, 1, figure = fig, height_ratios = [1, 3])
+        gs = gridspec.GridSpec(2, 1, figure = fig, height_ratios = [1, 5])
 
     # Set subplots
     ax1 = fig.add_subplot(gs[0])

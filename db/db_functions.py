@@ -115,10 +115,10 @@ def create_plane(c, conn):
             conn: Connection
     """
 
-    # Plane structure 
-    # In economy: 1 corridor, 6 columns (without considering the corridor) and 15 rows
-    # In first class: 1 corridor, 4 columns (without considering the corridor) and 5 rows
-    c.execute("""INSERT INTO Planes VALUES ("AFM2020", "1", "6", "15", "1", "4", "5")""")
+    # Plane structure (A320 - 214 (4R-ABM/N/O) Configuration)
+    # In economy: 1 corridor, 6 columns (without considering the corridor) and 20 rows
+    # In first class: 1 corridor, 4 columns (without considering the corridor) and 4 rows
+    c.execute("""INSERT INTO Planes VALUES ("A320 - 214", "1", "6", "20", "1", "4", "4")""")
     conn.commit()
 
 def create_seats(c, conn, rows, rows_1C, col_corridor, col_corridor_1C):
@@ -148,7 +148,7 @@ def create_seats(c, conn, rows, rows_1C, col_corridor, col_corridor_1C):
             seat_ref = i + str(j)
             x, y = t.transform_ref_to_xy(seat_ref, col_corridor)
             occupied = False
-            plane_ID = "AFM2020"
+            plane_ID = "A320 - 214"
 
             data_seating.append({"Plane_ID": plane_ID, "Class": "Economy", "Seat": seat_ref, "X": x, "Y": y, "Occupied": occupied})
 
@@ -161,7 +161,7 @@ def create_seats(c, conn, rows, rows_1C, col_corridor, col_corridor_1C):
             seat_ref = i + str(j)
             x, y = t.transform_ref_to_xy(seat_ref, col_corridor_1C)
             occupied = False
-            plane_ID = "AFM2020"
+            plane_ID = "A320 - 214"
 
             data_seating.append({"Plane_ID": plane_ID, "Class": "First class", "Seat": seat_ref, "X": x, "Y": y, "Occupied": occupied})
 
