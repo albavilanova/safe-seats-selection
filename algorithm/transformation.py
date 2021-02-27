@@ -76,7 +76,7 @@ def transform_xy_to_ref(x, y, col_corridor):
 
         first_element = chr(ord('@') + (x + 1))
     
-    elif x > col_corridor :
+    elif x > col_corridor:
 
         first_element = chr(ord('@') + (x))
     

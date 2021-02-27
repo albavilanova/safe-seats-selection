@@ -208,7 +208,7 @@ def furthest_seat_all(seats_occupied, seats_available, status, number_of_passeng
 
     return seat
 
-def find_second_seat(seat, seats_map, seats_available):
+def find_second_seat(seat, seats_map, seats_available, col_corridor):
 
     """ Find the second seat
 
@@ -223,135 +223,137 @@ def find_second_seat(seat, seats_map, seats_available):
 
     second_seat = np.array([])
 
-    # For all rows, except first and last
-    if seat[1] > 0 and seat[1] < (seats_map.shape[0] - 1):
+    if col_corridor == 3:
+    
+        # For all rows, except first and last
+        if seat[1] > 0 and seat[1] < (seats_map.shape[0] - 1):
 
-        # 313: For columns A and D
-        if seat[0] == 0 or seat[0] == 4: 
+            # 313: For columns A and D
+            if seat[0] == 0 or seat[0] == 4: 
 
-            if seats_available.size != 0:
+                if seats_available.size != 0:
 
-                if (seats_map[seat[1] - 1, seat[0] + 1] != 2 and 
-                    seats_map[seat[1] + 1, seat[0] + 1] != 2 and 
-                    seats_map[seat[1], seat[0] + 2] != 2 and 
-                    seats_map[seat[1], seat[0] + 1] == 0):
-                    
-                    second_seat = np.array([seat[0] + 1, seat[1]])   
+                    if (seats_map[seat[1] - 1, seat[0] + 1] != 2 and 
+                        seats_map[seat[1] + 1, seat[0] + 1] != 2 and 
+                        seats_map[seat[1], seat[0] + 2] != 2 and 
+                        seats_map[seat[1], seat[0] + 1] == 0):
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])   
 
-            elif seats_available.size == 0:    
+                elif seats_available.size == 0:    
 
-                if seats_map[seat[1], seat[0] + 1] == 3:
-                    
-                    second_seat = np.array([seat[0] + 1, seat[1]])
+                    if seats_map[seat[1], seat[0] + 1] == 3:
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
 
-        # 313: For columns B and E
-        if seat[0] == 1 or seat[0] == 5: 
-            
-            if seats_available.size != 0:
-
-                # Add to the left
-                if (seats_map[seat[1] - 1, seat[0] - 1] != 2 and
-                    seats_map[seat[1] + 1, seat[0] - 1] != 2 and
-                    seats_map[seat[1], seat[0] - 1] == 0):
-
-                    second_seat = np.array([seat[0] - 1, seat[1]])
-                    
-                # Or add to the right
-                elif (seats_map[seat[1] - 1, seat[0] + 1] != 2 and
-                    seats_map[seat[1] + 1, seat[0] + 1] != 2 and
-                    seats_map[seat[1], seat[0] + 1] == 0):
-                    
-                    second_seat = np.array([seat[0] + 1, seat[1]])
-
-            elif seats_available.size == 0:
+            # 313: For columns B and E
+            if seat[0] == 1 or seat[0] == 5: 
                 
-                # Add to the left
-                if seats_map[seat[1], seat[0] - 1] == 3:
+                if seats_available.size != 0:
 
-                    second_seat = np.array([seat[0] - 1, seat[1]])
-                    
-                # Or add to the right
-                elif seats_map[seat[1], seat[0] + 1] == 3:
-                    
-                    second_seat = np.array([seat[0] + 1, seat[1]])
+                    # Add to the left
+                    if (seats_map[seat[1] - 1, seat[0] - 1] != 2 and
+                        seats_map[seat[1] + 1, seat[0] - 1] != 2 and
+                        seats_map[seat[1], seat[0] - 1] == 0):
 
-        # 313 - For columns C and F
-        if seat[0] == 2 or seat[0] == 6: 
+                        second_seat = np.array([seat[0] - 1, seat[1]])
+                        
+                    # Or add to the right
+                    elif (seats_map[seat[1] - 1, seat[0] + 1] != 2 and
+                        seats_map[seat[1] + 1, seat[0] + 1] != 2 and
+                        seats_map[seat[1], seat[0] + 1] == 0):
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
 
-            if seats_available.size != 0:
+                elif seats_available.size == 0:
                     
-                if (seats_map[seat[1] + 1, seat[0] - 1] != 2 and 
-                    seats_map[seat[1] - 1, seat[0] - 1] != 2 and 
-                    seats_map[seat[1], seat[0] - 2] != 2 and
-                    seats_map[seat[1], seat[0] - 1] == 0):
-                    
-                    second_seat = np.array([seat[0] - 1, seat[1]])
+                    # Add to the left
+                    if seats_map[seat[1], seat[0] - 1] == 3:
+
+                        second_seat = np.array([seat[0] - 1, seat[1]])
+                        
+                    # Or add to the right
+                    elif seats_map[seat[1], seat[0] + 1] == 3:
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
+
+            # 313 - For columns C and F
+            if seat[0] == 2 or seat[0] == 6: 
+
+                if seats_available.size != 0:
+                        
+                    if (seats_map[seat[1] + 1, seat[0] - 1] != 2 and 
+                        seats_map[seat[1] - 1, seat[0] - 1] != 2 and 
+                        seats_map[seat[1], seat[0] - 2] != 2 and
+                        seats_map[seat[1], seat[0] - 1] == 0):
+                        
+                        second_seat = np.array([seat[0] - 1, seat[1]])
+                
+                elif seats_available.size == 0:
+
+                    if seats_map[seat[1], seat[0] - 1] == 3:
+                        
+                        second_seat = np.array([seat[0] - 1, seat[1]])  
             
-            elif seats_available.size == 0:
+        # For first row
+        elif seat[1] == 0:
 
-                if seats_map[seat[1], seat[0] - 1] == 3:
-                    
-                    second_seat = np.array([seat[0] - 1, seat[1]])  
-        
-    # For first row
-    elif seat[1] == 0:
+            # 313: For columns A and D
+            if seat[0] == 0 or seat[0] == 4: 
 
-        # 313: For columns A and D
-        if seat[0] == 0 or seat[0] == 4: 
+                if seats_available.size != 0:
 
-            if seats_available.size != 0:
+                    if (seats_map[seat[1] + 1, seat[0] + 1] != 2 and 
+                        seats_map[seat[1], seat[0] + 2] != 2 and 
+                        seats_map[seat[1], seat[0] + 1] == 0):
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
 
-                if (seats_map[seat[1] + 1, seat[0] + 1] != 2 and 
-                    seats_map[seat[1], seat[0] + 2] != 2 and 
-                    seats_map[seat[1], seat[0] + 1] == 0):
-                    
-                    second_seat = np.array([seat[0] + 1, seat[1]])
+                elif seats_available.size == 0:
 
-            elif seats_available.size == 0:
+                    if seats_map[seat[1], seat[0] + 1] == 3:
 
-                if seats_map[seat[1], seat[0] + 1] == 3:
+                        second_seat = np.array([seat[0] + 1, seat[1]])
 
-                    second_seat = np.array([seat[0] + 1, seat[1]])
+            # 313: For columns B and E
+            if seat[0] == 1 or seat[0] == 5: 
+                
+                if seats_available.size != 0:
+                        
+                    # Add to the left
+                    if (seats_map[seat[1] + 1, seat[0] - 1] != 2 and
+                        seats_map[seat[1], seat[0] - 1] == 0):
 
-        # 313: For columns B and E
-        if seat[0] == 1 or seat[0] == 5: 
-            
-            if seats_available.size != 0:
-                    
-                # Add to the left
-                if (seats_map[seat[1] + 1, seat[0] - 1] != 2 and
-                    seats_map[seat[1], seat[0] - 1] == 0):
+                        second_seat = np.array([seat[0] - 1, seat[1]])
 
-                    second_seat = np.array([seat[0] - 1, seat[1]])
+                    # Or add to the right
+                    elif (seats_map[seat[1] + 1, seat[0] + 1] != 2 and
+                        seats_map[seat[1], seat[0] + 1] == 0):
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
 
-                # Or add to the right
-                elif (seats_map[seat[1] + 1, seat[0] + 1] != 2 and
-                    seats_map[seat[1], seat[0] + 1] == 0):
-                    
-                    second_seat = np.array([seat[0] + 1, seat[1]])
+                elif seats_available.size == 0:
+                        
+                    # Add to the left
+                    if seats_map[seat[1], seat[0] - 1] == 3:
 
-            elif seats_available.size == 0:
-                    
-                # Add to the left
-                if seats_map[seat[1], seat[0] - 1] == 3:
+                        second_seat = np.array([seat[0] - 1, seat[1]])
 
-                    second_seat = np.array([seat[0] - 1, seat[1]])
+                    # Or add to the right
+                    elif seats_map[seat[1], seat[0] + 1] == 3:
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
 
-                # Or add to the right
-                elif seats_map[seat[1], seat[0] + 1] == 3:
-                    
-                    second_seat = np.array([seat[0] + 1, seat[1]])
+            # 313: For columns C and F
+            if seat[0] == 2 or seat[0] == 6: 
 
-        # 313: For columns C and F
-        if seat[0] == 2 or seat[0] == 6: 
+                if seats_available.size != 0:
 
-            if seats_available.size != 0:
-
-                if (seats_map[seat[1] + 1, seat[0] - 1] != 2 and  
-                    seats_map[seat[1], seat[0] - 2] != 2 and
-                    seats_map[seat[1], seat[0] - 1] == 0):
-                    
-                    second_seat = np.array([seat[0] - 1, seat[1]])
+                    if (seats_map[seat[1] + 1, seat[0] - 1] != 2 and  
+                        seats_map[seat[1], seat[0] - 2] != 2 and
+                        seats_map[seat[1], seat[0] - 1] == 0):
+                        
+                        second_seat = np.array([seat[0] - 1, seat[1]])
 
                 elif seats_available.size == 0:
                     
@@ -359,71 +361,180 @@ def find_second_seat(seat, seats_map, seats_available):
 
                         second_seat = np.array([seat[0] - 1, seat[1]])
 
-    # For last row
-    elif seat[1] == (seats_map.shape[0] - 1):
+        # For last row
+        elif seat[1] == (seats_map.shape[0] - 1):
 
-        # 313: For columns A and D
-        if seat[0] == 0 or seat[0] == 4: 
+            # 313: For columns A and D
+            if seat[0] == 0 or seat[0] == 4: 
 
-            if seats_available.size != 0:
+                if seats_available.size != 0:
 
-                if (seats_map[seat[1] - 1, seat[0] + 1] != 2 and 
-                    seats_map[seat[1], seat[0] + 2] != 2 and 
-                    seats_map[seat[1], seat[0] + 1] == 0):
-                    
-                    second_seat = np.array([seat[0] + 1, seat[1]])
+                    if (seats_map[seat[1] - 1, seat[0] + 1] != 2 and 
+                        seats_map[seat[1], seat[0] + 2] != 2 and 
+                        seats_map[seat[1], seat[0] + 1] == 0):
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
 
-            elif seats_available.size == 0:
+                elif seats_available.size == 0:
 
-                if seats_map[seat[1], seat[0] + 1] == 3:
-                    
-                    second_seat = np.array([seat[0] + 1, seat[1]])
+                    if seats_map[seat[1], seat[0] + 1] == 3:
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
 
-        # 313: For columns B and E
-        if seat[0] == 1 or seat[0] == 5: 
+            # 313: For columns B and E
+            if seat[0] == 1 or seat[0] == 5: 
 
-            if seats_available.size != 0:
+                if seats_available.size != 0:
 
-                # Add to the left
-                if (seats_map[seat[1] - 1, seat[0] - 1] != 2 and
-                    seats_map[seat[1], seat[0] - 1] == 0):
+                    # Add to the left
+                    if (seats_map[seat[1] - 1, seat[0] - 1] != 2 and
+                        seats_map[seat[1], seat[0] - 1] == 0):
 
-                    second_seat = np.array([seat[0] - 1, seat[1]])
+                        second_seat = np.array([seat[0] - 1, seat[1]])
 
-                # Or add to the left
-                elif (seats_map[seat[1] - 1, seat[0] + 1] != 2 and
-                    seats_map[seat[1], seat[0] + 1] == 0):
-                    
-                    second_seat = np.array([seat[0] + 1, seat[1]])
+                    # Or add to the left
+                    elif (seats_map[seat[1] - 1, seat[0] + 1] != 2 and
+                        seats_map[seat[1], seat[0] + 1] == 0):
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
 
-            elif seats_available.size == 0:
+                elif seats_available.size == 0:
 
-                # Add to the left
-                if seats_map[seat[1], seat[0] - 1] == 3:
+                    # Add to the left
+                    if seats_map[seat[1], seat[0] - 1] == 3:
 
-                    second_seat = np.array([seat[0] - 1, seat[1]])
+                        second_seat = np.array([seat[0] - 1, seat[1]])
 
-                # Or add to the left
-                elif seats_map[seat[1], seat[0] + 1] == 3:
-                    
-                    second_seat = np.array([seat[0] + 1, seat[1]])
+                    # Or add to the left
+                    elif seats_map[seat[1], seat[0] + 1] == 3:
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
 
-        # 313: For columns C and F
-        if seat[0] == 2 or seat[0] == 6: 
+            # 313: For columns C and F
+            if seat[0] == 2 or seat[0] == 6: 
 
-            if seats_available.size != 0:
+                if seats_available.size != 0:
 
-                if (seats_map[seat[1] - 1, seat[0] - 1] != 2 and 
-                    seats_map[seat[1], seat[0] - 2] != 2 and
-                    seats_map[seat[1], seat[0] - 1] == 0):
-                    
-                    second_seat = np.array([seat[0] - 1, seat[1]])
+                    if (seats_map[seat[1] - 1, seat[0] - 1] != 2 and 
+                        seats_map[seat[1], seat[0] - 2] != 2 and
+                        seats_map[seat[1], seat[0] - 1] == 0):
+                        
+                        second_seat = np.array([seat[0] - 1, seat[1]])
+                
+                elif seats_available.size == 0:
+
+                    if seats_map[seat[1], seat[0] - 1] == 3:
+
+                        second_seat = np.array([seat[0] - 1, seat[1]])
+
+    elif col_corridor == 2:
+
+        # For all rows, except first and last
+        if seat[1] > 0 and seat[1] < (seats_map.shape[0] - 1):
+
+            # 212: For columns A and C
+            if seat[0] == 0 or seat[0] == 3: 
+
+                if seats_available.size != 0:
+
+                    if (seats_map[seat[1] - 1, seat[0] + 1] != 2 and 
+                        seats_map[seat[1] + 1, seat[0] + 1] != 2 and 
+                        seats_map[seat[1], seat[0] + 1] == 0):
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])   
+
+                elif seats_available.size == 0:    
+
+                    if seats_map[seat[1], seat[0] + 1] == 3:
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
+
+            # 212 - For columns B and D
+            if seat[0] == 1 or seat[0] == 4: 
+
+                if seats_available.size != 0:
+                        
+                    if (seats_map[seat[1] + 1, seat[0] - 1] != 2 and 
+                        seats_map[seat[1] - 1, seat[0] - 1] != 2 and 
+                        seats_map[seat[1], seat[0] - 1] == 0):
+                        
+                        second_seat = np.array([seat[0] - 1, seat[1]])
+                
+                elif seats_available.size == 0:
+
+                    if seats_map[seat[1], seat[0] - 1] == 3:
+                        
+                        second_seat = np.array([seat[0] - 1, seat[1]])  
             
-            elif seats_available.size == 0:
+        # For first row
+        elif seat[1] == 0:
+            
+            # 212: For columns A and C
+            if seat[0] == 0 or seat[0] == 3: 
+               
+                if seats_available.size != 0:
+                    
+                    if (seats_map[seat[1] + 1, seat[0] + 1] != 2 and 
+                        seats_map[seat[1], seat[0] + 1] == 0):
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
 
-                if seats_map[seat[1], seat[0] - 1] == 3:
+                elif seats_available.size == 0:
+                   
+                    if seats_map[seat[1], seat[0] + 1] == 3:
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
 
-                    second_seat = np.array([seat[0] - 1, seat[1]])
+            # 212: For columns B and D
+            if seat[0] == 1 or seat[0] == 4: 
+                
+                if seats_available.size != 0:
+
+                    if (seats_map[seat[1] + 1, seat[0] - 1] != 2 and  
+                        seats_map[seat[1], seat[0] - 1] == 0):
+                        
+                        second_seat = np.array([seat[0] - 1, seat[1]])
+
+                elif seats_available.size == 0:
+                   
+                    if seats_map[seat[1], seat[0] - 1] == 3:
+
+                        second_seat = np.array([seat[0] - 1, seat[1]])
+
+        # For last row
+        elif seat[1] == (seats_map.shape[0] - 1):
+
+            # 212 For columns A and C
+            if seat[0] == 0 or seat[0] == 3: 
+
+                if seats_available.size != 0:
+
+                    if (seats_map[seat[1] - 1, seat[0] + 1] != 2 and 
+                        seats_map[seat[1], seat[0] + 1] == 0):
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
+
+                elif seats_available.size == 0:
+
+                    if seats_map[seat[1], seat[0] + 1] == 3:
+                        
+                        second_seat = np.array([seat[0] + 1, seat[1]])
+
+            # 212: For columns B and D
+            if seat[0] == 1 or seat[0] == 4: 
+
+                if seats_available.size != 0:
+
+                    if (seats_map[seat[1] - 1, seat[0] - 1] != 2 and 
+                        seats_map[seat[1], seat[0] - 1] == 0):
+                        
+                        second_seat = np.array([seat[0] - 1, seat[1]])
+                
+                elif seats_available.size == 0:
+
+                    if seats_map[seat[1], seat[0] - 1] == 3:
+
+                        second_seat = np.array([seat[0] - 1, seat[1]])
 
     return second_seat
 

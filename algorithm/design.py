@@ -12,7 +12,44 @@ Created on February 18, 2021
 import numpy as np
 import math
 
-def block_seats(seats_map, seats_occupied, blocking_method, col_corridor):
+def block_next_to_occupied(seats_map, seats_occupied, col_corridor):
+
+    """ Block the seats next to the occupies ones ("Next to occupied")
+
+        Args:
+            seats_map (arr): Array with seats map data
+            seats_occupied (arr): Array with coordinates of occupied seats
+            col_corridor (int): Position of the corridor
+
+        Returns:
+            seats_map (arr): Updated array with seats map data
+    """
+    
+    for i, j in seats_occupied:
+
+        # Define blocked seat at the bottom of occupied seat
+        if (j + 1) < seats_map.shape[0]:
+
+            seats_map[j + 1][i] = 3
+
+        # Define blocked seat at the top of occupied seat
+        if (j - 1) >= 0:
+
+            seats_map[j - 1][i] = 3
+
+        # Define blocked seat to the right of occupied seat
+        if ((i + 1) < seats_map.shape[1]) and ((i + 1) != col_corridor):
+
+            seats_map[j][i + 1] = 3
+
+        # Define blocked seat to the left of occupied seat
+        if ((i - 1) >= 0) and ((i - 1) != col_corridor):
+
+            seats_map[j][i - 1] = 3
+
+    return seats_map
+
+def block_seats(seats_map, seats_occupied, col_corridor, blocking_method):
 
     """ Block seats according to the blocking method, which can be blocking the middle seats
         ("Middle seats") or the seats next to the occupies ones ("Next to occupied")
@@ -20,37 +57,16 @@ def block_seats(seats_map, seats_occupied, blocking_method, col_corridor):
         Args:
             seats_map (arr): Array with seats map data
             seats_occupied (arr): Array with coordinates of occupied seats
-            blocking_method (str): Blocking method
             col_corridor (int): Position of the corridor
+            blocking_method (str): Blocking method
 
         Returns:
             seats_map (arr): Updated array with seats map data
     """
 
-    # Allocate blocked seats
     if blocking_method == "Next to occupied":
 
-        for i, j in seats_occupied:
-
-            # Define blocked seat at the bottom of occupied seat
-            if (j + 1) < seats_map.shape[0]:
-
-                seats_map[j + 1][i] = 3
-
-            # Define blocked seat at the top of occupied seat
-            if (j - 1) >= 0:
-
-                seats_map[j - 1][i] = 3
-
-            # Define blocked seat to the right of occupied seat
-            if ((i + 1) < seats_map.shape[1]) and ((i + 1) != col_corridor):
-
-                seats_map[j][i + 1] = 3
-
-            # Define blocked seat to the left of occupied seat
-            if ((i - 1) >= 0) and ((i - 1) != col_corridor):
-
-                seats_map[j][i - 1] = 3
+        block_next_to_occupied(seats_map, seats_occupied, col_corridor)
 
     elif blocking_method == "Middle seat":
 
@@ -64,7 +80,7 @@ def block_seats(seats_map, seats_occupied, blocking_method, col_corridor):
         
         else:
 
-            print("ERROR: There are no middle seats to block.")
+            block_next_to_occupied(seats_map, seats_occupied, col_corridor)
 
     return seats_map
 
@@ -90,7 +106,7 @@ def create_seats_map(columns, rows, col_corridor, seats_occupied, blocking_metho
     seats_map[:, col_corridor] = 1
 
     # Allocate block seats
-    seats_map = block_seats(seats_map, seats_occupied, blocking_method, col_corridor)
+    seats_map = block_seats(seats_map, seats_occupied, col_corridor, blocking_method)
 
     # Allocate occupied seats
     for i, j in seats_occupied:
@@ -135,7 +151,7 @@ def update_seats_map(seats_map, col_corridor, seats_occupied, blocking_method):
     """
 
     # Allocate block seats
-    seats_map = block_seats(seats_map, seats_occupied, blocking_method, col_corridor)
+    seats_map = block_seats(seats_map, seats_occupied, col_corridor, blocking_method)
 
     # Allocate occupied seats
     for i, j in seats_occupied:

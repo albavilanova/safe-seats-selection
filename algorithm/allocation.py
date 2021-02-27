@@ -12,7 +12,6 @@ Created on February 15, 2021
 import algorithm.optimization as o
 import algorithm.transformation as t
 import algorithm.design as d
-import plot.visualization as v
 import numpy as np
 import random
 
@@ -40,9 +39,6 @@ def automatic_selection(seats_free, seats_occupied, seats_occupied_ref, seats_av
             second_seat_ref (str): Reference of selected second seat
     """
 
-    # See initial seat map
-    v.make_plot(seats_map)
-
     # Initialize seats reference
     seat_ref = []
     second_seat_ref = []
@@ -60,8 +56,7 @@ def automatic_selection(seats_free, seats_occupied, seats_occupied_ref, seats_av
         if seats_occupied.size == 0:
             
             seat = o.find_random_seat_all(seats_map)
-            seat_ref = t.transform_xy_to_ref(int(seat[0]), int(seat[1]), col_corridor)
-            print(f"There are no occupied seats. The seat {seat_ref} is chosen randomly.")
+            print("There are no occupied seats. The (first) seat will be chosen randomly.")
 
         else:
 
@@ -70,8 +65,9 @@ def automatic_selection(seats_free, seats_occupied, seats_occupied_ref, seats_av
             
             # Print the furthest seat from all occupied seats
             seat = o.furthest_seat_all(seats_occupied, seats_available, status, number_of_passengers, seats_map, blocking_method)
-            seat_ref = t.transform_xy_to_ref(seat[0], seat[1], col_corridor)
-            print(f"The seat of the (first) passenger is {seat_ref}.")
+
+        seat_ref = t.transform_xy_to_ref(int(seat[0]), int(seat[1]), col_corridor)
+        print(f"The seat of the (first) passenger is {seat_ref}.")
 
         # Allocate (first) seat
         seats_map[seat[1], seat[0]] = 4
@@ -85,22 +81,21 @@ def automatic_selection(seats_free, seats_occupied, seats_occupied_ref, seats_av
         if number_of_passengers == 2:
 
             # Try to find second seat next to first seat
-            second_seat = o.find_second_seat(seat, seats_map, seats_available)
+            second_seat = o.find_second_seat(seat, seats_map, seats_available, col_corridor)
 
             if second_seat.size == 0:
 
                 # If there are available seats (green), find second seat at the furthest distance from all 
                 if seats_available.size != 0:
 
-                    print(f"There are no more available seats in pairs. The second seat will be the furthest from all.")
+                    print("There are no more available seats in pairs. The second seat will be the furthest from all.")
                     second_seat = o.furthest_seat_all(seats_occupied, seats_available, status, number_of_passengers, seats_map, blocking_method)
 
                 # If there are no available seats (no green), find second seat randomly
                 else:
                     
-                    print(f"There are no more available seats. The second seat will be randomly allocated in a blocked space.")
+                    print("There are no more available seats. The second seat will be randomly allocated in a blocked space.")
                     second_seat = o.find_random_seat_blocked(seats_free)
-                    second_seat_ref = t.transform_xy_to_ref(second_seat[0], second_seat[1], col_corridor)
                     
             second_seat_ref = t.transform_xy_to_ref(int(second_seat[0]), int(second_seat[1]), col_corridor)
             print(f"The seat of the second passenger is {second_seat_ref}.")
@@ -112,17 +107,14 @@ def automatic_selection(seats_free, seats_occupied, seats_occupied_ref, seats_av
         seats_occupied, seats_available, seats_free = d.update_seats(seats_map)
         seats_occupied_ref = np.append(seats_occupied_ref, seat_ref)
 
-        # Make plot to see first and second seat in blue
-        v.make_plot(seats_map)
-
     elif seats_available.size == 0:
         
         status = 1
 
         # ALLOCATE FIRST PASSENGER (WHEN THERE ARE NO AVAILABLE SEATS)
+        print("ALERT: There are no more available seats to ensure social distancing. However, the booking will be made.")
 
-        print("There are no more available seats. The first seat will be allocated at the furthest distance from the rest.")
-        print("Safety measures cannot be longer guaranteed.")
+        print("The seat of the (first) passenger will be allocated at the furthest distance from the rest.")
         seat = o.furthest_seat_all(seats_occupied, seats_free, status, number_of_passengers, seats_map, blocking_method)
 
         # Get reference from (first) seat
@@ -140,26 +132,24 @@ def automatic_selection(seats_free, seats_occupied, seats_occupied_ref, seats_av
 
         if number_of_passengers == 2:
 
-            # If there are no available seats (no green), allocate second seat in random blocked position 
-            print(f"The second seat will be allocated in any of the free seats, without considering the distance.")
-
             # If there are no free seats (all red) after adding the first seat, remove first seat. 
             if seats_free.size == 0:
 
-                print("There are no more free seats. The data of the both passengers will be removed.")
+                print("ALERT: There are no more free seats. The data of the both passengers will be removed.")
                 seats_map[seat[1], seat[0]] = 3
 
             else:
                 
                 # Try to find second seat next to first seat
-                second_seat = o.find_second_seat(seat, seats_map, seats_available)
+                second_seat = o.find_second_seat(seat, seats_map, seats_available, col_corridor)
 
                 if second_seat.size == 0:
 
                     # If there are free seats (orange), find second seat at the furthest distance from all 
                     if seats_available.size != 0:
 
-                        print(f"There are no more available seats in pairs. The second seat will be the furthest from all.")
+                        print("ALERT: There are no more available seats in pairs.") 
+                        print("The second seat will be will be allocated at the furthest distance from the rest.")
                         second_seat = o.furthest_seat_all(seats_occupied, seats_available, status, number_of_passengers, seats_map, blocking_method)
 
                 # Get reference from second seat
@@ -172,15 +162,9 @@ def automatic_selection(seats_free, seats_occupied, seats_occupied_ref, seats_av
             # Update seats
             seats_occupied, seats_available, seats_free = d.update_seats(seats_map)
             seats_occupied_ref = np.append(seats_occupied_ref, seat_ref)     
-
-        # Make plot to see first and second seat in blue
-        v.make_plot(seats_map)
     
     # Update seats map
     seats_map = d.update_seats_map(seats_map, col_corridor, seats_occupied, blocking_method)
-
-    # Make final plot
-    v.make_plot(seats_map)
     
     return seats_free, seats_occupied, seats_available, seats_map, seat_ref, second_seat_ref
 
@@ -208,9 +192,6 @@ def manual_selection(seats_free, seats_occupied, seats_occupied_ref, seats_avail
             second_seat_ref (str): Reference of selected second seat
     """
 
-    # See initial seat map
-    v.make_plot(seats_map)
-
     # Initialize seats reference
     seat_ref = []
     second_seat_ref = []
@@ -226,7 +207,6 @@ def manual_selection(seats_free, seats_occupied, seats_occupied_ref, seats_avail
         print("ERROR: The seat reference should be a letter, followed by a number, and the seat should be free.")
         print("The free seats are:")
         print(seats_free_ref)
-        v.make_plot(seats_map)
         seat_ref = input("Enter your seat: ")
 
     # Get coordinates from (first) seat
@@ -250,7 +230,6 @@ def manual_selection(seats_free, seats_occupied, seats_occupied_ref, seats_avail
             print("ERROR: The seat reference should be a letter, followed by a number, and the seat should be free.")
             print("The free seats are:")
             print(seats_free_ref)
-            v.make_plot(seats_map)
             second_seat_ref = input("Enter the second seat: ")
 
         # Get coordinates from second seat
@@ -262,14 +241,8 @@ def manual_selection(seats_free, seats_occupied, seats_occupied_ref, seats_avail
         # Update seats
         seats_occupied, seats_available, seats_free = d.update_seats(seats_map)
         seats_occupied_ref = np.append(seats_occupied_ref, second_seat_ref)
-    
-    # Make plot to see first and second seat in blue
-    v.make_plot(seats_map)
 
     # Update seats map
     seats_map = d.update_seats_map(seats_map, col_corridor, seats_occupied, blocking_method)
-
-    # Make final plot
-    v.make_plot(seats_map)
 
     return seats_free, seats_occupied, seats_available, seats_map, seat_ref, second_seat_ref
