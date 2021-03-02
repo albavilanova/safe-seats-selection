@@ -176,7 +176,8 @@ def change_seat_status(c, conn, seat_ref, second_seat_ref, number_of_passengers,
             conn: Connection
             seat_ref (str): Seat reference for first passenger
             second_seat_ref (str): Seat reference for second passenger
-            number_of_passenger (int): Number of passengers per booking
+            number_of_passengers (int): Number of passengers per booking
+            class_type (str): Class type
     """
 
     c.execute("""UPDATE Seating
@@ -266,7 +267,7 @@ def delete_booking(c, conn):
 
     conn.commit()
 
-def create_passengers(c, conn, seat_ref, second_seat_ref, df_passengers, number_of_passengers):
+def create_passengers(c, conn, seat_ref, second_seat_ref, df_passengers, number_of_passengers, seats_free):
 
     """ Update passengers dataframe by adding the seat references and upload to database. Also,
         change status from False to True for the new occupied seats.
@@ -277,7 +278,8 @@ def create_passengers(c, conn, seat_ref, second_seat_ref, df_passengers, number_
             df_passengers (df): Dataframe with passengers data
             seat_ref (str): Seat reference for first passenger
             second_seat_ref (str): Seat reference for second passenger
-            number_of_passenger (int): Number of passengers per booking
+            number_of_passengers (int): Number of passengers per booking
+            seats_free (arr): Array with coordinates of free seats
     """
 
     # Input (first) seat reference into the passengers dataframe
@@ -288,8 +290,14 @@ def create_passengers(c, conn, seat_ref, second_seat_ref, df_passengers, number_
         #Input second seat reference into the passengers dataframe
         df_passengers.iloc[1, 5] = second_seat_ref
 
-    # Input passengers dataframe into the DB
-    df_passengers.to_sql('Passengers', conn, if_exists='append', index = False)
+    if number_of_passengers == 2 and seats_free.shape[0] == 1:
 
-    # Change the seats status (from False to True) if they are occupied in table Seating
-    change_seat_status(c, conn, seat_ref, second_seat_ref, number_of_passengers, df_passengers["Class"][0])
+        pass
+
+    else:
+        
+        # Input passengers dataframe into the DB
+        df_passengers.to_sql('Passengers', conn, if_exists='append', index = False)
+
+        # Change the seats status (from False to True) if they are occupied in table Seating
+        change_seat_status(c, conn, seat_ref, second_seat_ref, number_of_passengers, df_passengers["Class"][0])

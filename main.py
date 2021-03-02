@@ -99,7 +99,7 @@ while not stop:
                 seats_occupied_ref, seats_available, seats_map, col_corridor, number_of_passengers, blocking_method)
 
             # Update passengers dataframe and save to DB
-            dbf.create_passengers(c, conn, seat_ref, second_seat_ref, df_passengers, number_of_passengers)
+            dbf.create_passengers(c, conn, seat_ref, second_seat_ref, df_passengers, number_of_passengers, seats_free)
 
             # See final seat map
             p.make_plot(seats_map, seats_map_1C)
@@ -110,7 +110,7 @@ while not stop:
 
             if seats_free_1C.size != 0:
 
-                print("If you are still interested in flying with us, we inform you that there are available seats in first class. Retry again.") 
+                print("If you are still interested in flying with us, we inform you that there is at least one available seats in first class. Retry again.") 
 
             break
 
@@ -132,7 +132,7 @@ while not stop:
                 seats_occupied_1C, seats_occupied_ref_1C, seats_available_1C, seats_map_1C, col_corridor_1C, number_of_passengers, blocking_method)
 
             # Update passengers dataframe and save to DB
-            dbf.create_passengers(c, conn, seat_ref, second_seat_ref, df_passengers, number_of_passengers)
+            dbf.create_passengers(c, conn, seat_ref, second_seat_ref, df_passengers, number_of_passengers, seats_free_1C)
 
             # See final seat map
             p.make_plot(seats_map, seats_map_1C)
@@ -143,7 +143,7 @@ while not stop:
 
             if seats_free.size != 0:
 
-                print("If you are still interested in flying with us, we inform you that there are available seats in economy class.") 
+                print("If you are still interested in flying with us, we inform you that there is at least one available seats in economy class.") 
 
             break
         

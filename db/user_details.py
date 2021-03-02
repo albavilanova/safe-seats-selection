@@ -56,6 +56,8 @@ def input_user_details(c):
     selection_preference = answers["selection_preference"]
     class_type = answers["class_type"]
 
+    passenger_ID_list = c.execute("""SELECT Passenger_ID FROM Passengers""").fetchall()
+
     for i in range(number_of_passengers):
 
         print("New passenger:")
@@ -68,17 +70,18 @@ def input_user_details(c):
             passenger_name = input("Enter full name: ")
 
         passenger_ID = input("Enter ID number: ")
-        passenger_ID_list = c.execute("""SELECT Passenger_ID FROM Passengers""").fetchall()
 
         while not passenger_ID:
 
             print("ERROR: The passenger ID is mandatory.")
             passenger_ID = input("Enter ID number: ")
-
+        
         while passenger_ID in [i[0] for i in passenger_ID_list]:
             
             print("ERROR: The passenger ID has already been used to book this trip.")
             passenger_ID = input("Enter ID number: ")
+
+        passenger_ID_list.append((passenger_ID,))
 
         seat = []
         data_passengers.append({"Booking_Reference": booking_reference, "Passenger_Name": passenger_name, "Passenger_ID": passenger_ID, "Selection_Preference": selection_preference, "Class": class_type, "Seat": seat})
