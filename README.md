@@ -127,7 +127,7 @@ Master's degree in Geospatial Technologies at <a href ="https://www.novaims.unl.
 
 <b>Fábio Silva</b><br>
 Bachelor's degree in Information Systems at <a href ="https://www.novaims.unl.pt/" target = "_blank">NOVA University of Lisbon</a><br>
-MSc in Geospatial Technologies at <a href ="https://www.novaims.unl.pt/" target = "_blank">NOVA University of Lisbon</a>, <a href ="https://www.uni-muenster.de/en/" target = "_blank">WWU Münster</a> and <a href ="https://www.uji.es/" target = "_blank">UJI</a><br>
+Master's degree in Geospatial Technologies at <a href ="https://www.novaims.unl.pt/" target = "_blank">NOVA University of Lisbon</a>, <a href ="https://www.uni-muenster.de/en/" target = "_blank">WWU Münster</a> and <a href ="https://www.uji.es/" target = "_blank">UJI</a><br>
 </p>
 
 <b>Alba Vilanova Cortezón</b><br>
